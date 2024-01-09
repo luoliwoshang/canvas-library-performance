@@ -1,7 +1,6 @@
 
 
 <template>
-  <button @click="init()">加载</button>
   <select v-model="selectRenderLibrary">
     <option v-for="item in selectRenderLibraryOptions" :value="item.value">{{ item.label }}</option>
   </select>
@@ -15,10 +14,9 @@
   </canvas>
 </template>
 <script setup>
-import { computed, onMounted, ref } from 'vue'
-import { fabric } from 'fabric' // 引入 fabric
+import { computed, ref } from 'vue'
+import { fabric } from 'fabric' 
 import Konva from 'konva'
-import { Layer } from 'konva/lib/Layer';
 // 引入 performance 对象
 const { performance } = window
 const renderTime = ref(0)
@@ -167,16 +165,20 @@ const selectRenderLibraryOptions = [
   }
 ]
 const library = computed(() => {
+  console.log(selectRenderLibrary.value)
   if (selectRenderLibrary.value === 'fabric') {
-    return new FabricRenderer()
+    return init(FabricRenderer);
   } else {
-    return new KonvaRenderer()
+    return init(KonvaRenderer);
   }
 })
-function init() {
+function init(renderClass) {
+  console.log(renderClass)
   const startTime = performance.now()
+  const renderer=new renderClass()
   const endTime = performance.now()
   initTime.value = endTime - startTime
+  return renderer
 }
 
 function render() {
